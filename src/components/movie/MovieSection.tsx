@@ -6,6 +6,7 @@ import MovieCard from "./MovieCard"
 import type { MovieResponse } from "../../types/Movie.ts"
 import {fetchMedia} from "../../api/MovieApi.ts"
 import type {MediaCategory} from "../../types/Category.ts";
+import {getTypeMovies} from "../../utils/GetEndpoint.ts";
 
 type MediaSectionProps = {
     type: 'Trending Movies' | 'Top Rated Movies' | 'Trending TV Shows' | 'Top Rated TV Shows';
@@ -32,7 +33,7 @@ const MovieSection: React.FC<MediaSectionProps> = ({ type }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const endpoint = getEndpoint(type);
-
+    const getType = getTypeMovies(endpoint);
     const { data: popularMovies, isLoading: loadingPopular } = useQuery<MovieResponse>({
         queryKey: ['media', endpoint],
         queryFn: () => fetchMedia(endpoint),
@@ -85,7 +86,7 @@ const MovieSection: React.FC<MediaSectionProps> = ({ type }) => {
                 >
                     {popularMovies?.results.map((movie) => (
                         <div key={movie.id} className="flex-shrink-0 w-48">
-                            <MovieCard movie={movie} />
+                            <MovieCard movie={movie} type={getType} />
                         </div>
                     ))}
                 </div>

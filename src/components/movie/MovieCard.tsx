@@ -1,14 +1,17 @@
-import type { Movie } from "../../types/Movie"
-import { Play } from "lucide-react"
-import {getImageUrl} from "../../utils/GetImage.ts";
+import { Link } from "react-router-dom";
+import { Play } from "lucide-react";
+import { getImageUrl } from "../../utils/GetImage";
+import type { Movie } from "../../types/Movie";
+import type { Category } from "../../types/Category"; // giả sử bạn định nghĩa "movie" | "tv"
 
 interface MovieCardProps {
-    movie: Movie
+    movie: Movie;
+    type: Category; // "movie" | "tv"
 }
 
-const MovieCard = ({ movie }: MovieCardProps) => {
+const MovieCard = ({ movie, type }: MovieCardProps) => {
     return (
-        <div className="cursor-pointer group">
+        <Link to={`/${type}/${movie.id}`} className="cursor-pointer group block">
             <div className="relative overflow-hidden rounded-lg mb-2">
                 <img
                     src={getImageUrl(movie.poster_path) || "/placeholder.svg"}
@@ -22,9 +25,9 @@ const MovieCard = ({ movie }: MovieCardProps) => {
                     </button>
                 </div>
             </div>
-            <h3 className="text-sm font-medium truncate">{movie.title}</h3>
-        </div>
-    )
-}
+            <h3 className="text-sm font-medium truncate text-white">{movie.title}</h3>
+        </Link>
+    );
+};
 
-export default MovieCard
+export default MovieCard;

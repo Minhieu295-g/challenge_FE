@@ -1,11 +1,22 @@
 import { Play } from "lucide-react"
+import {useQuery} from "@tanstack/react-query";
+import type {MovieResponse} from "../../types/Movie.ts";
+import {fetchMedia} from "../../api/MovieApi.ts";
+import {getImageUrl} from "../../utils/GetImage.ts";
 
 const HeroSection = () => {
+    const { data: popularMovies, isLoading: loadingPopular } = useQuery<MovieResponse>({
+        queryKey: ['media', "movie/popular"],
+        queryFn: () => fetchMedia("movie/popular"),
+    });
+    const movie = popularMovies?.results?.[1];
+
+    if (loadingPopular) return <p>Loading...</p>
     return (
         <section className="relative h-screen min-h-[600px] w-full flex items-center">
             <div className="absolute inset-0 z-0">
                 <img
-                    src="https://image.tmdb.org/t/p/original/yBDvgpyynDsbMyK21FoQu1c2wYR.jpg"
+                    src={getImageUrl(movie?.backdrop_path) || "/placeholder.svg"}
                     alt="The Accountant 2 Banner"
                     className="w-full h-full object-cover"
                 />
@@ -16,13 +27,10 @@ const HeroSection = () => {
                 <div className="flex flex-col md:flex-row items-center gap-8">
                     <div className="flex-1 max-w-2xl">
                         <h1 className="text-6xl font-bold mb-6">
-                            The Accountant<sup>2</sup>
+                            {movie?.title}
                         </h1>
                         <p className="text-gray-300 mb-8 text-lg">
-                            When an old acquaintance is murdered, Wolff is compelled to solve the case. Realizing more extreme
-                            measures are necessary, Wolff recruits his estranged and highly lethal brother, Brax, to help. In
-                            partnership with Marybeth Medina, they uncover a deadly conspiracy, becoming targets of a ruthless network
-                            of killers who will stop at nothing to keep their secrets buried.
+                            {movie?.overview}
                         </p>
                         <div className="flex gap-4">
                             <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-md font-medium transition-colors flex items-center">
@@ -38,7 +46,7 @@ const HeroSection = () => {
                     {/* Movie Poster */}
                     <div className="flex-1 flex justify-end">
                         <img
-                            src="https://image.tmdb.org/t/p/w500//kMDUS7VmFhb2coRfVBoGLR8ADBt.jpg"
+                            src={getImageUrl(movie?.poster_path) || "/placeholder.svg"}
                             alt="The Accountant 2 Poster"
                             className="rounded-lg shadow-lg max-w-xs object-cover z-10"
                         />
